@@ -39,7 +39,7 @@ class Display(Frame):
         """
         Draw gray (not activated) lines.
         """
-        # Horizontal.
+        # horizontal
         for i in range(8):
             for j in range(3):
                 self.canvas.create_line(
@@ -50,7 +50,17 @@ class Display(Frame):
                     fill=ctx.off_color,
                 )
 
-        # Vertical.
+            # dots
+            self.canvas.create_rectangle(
+                45 + (i * 60),
+                90,
+                50 + (i * 60),
+                95,
+                fill=ctx.off_color,
+                outline=ctx.off_color,
+            )
+
+        # vertical
         for i in range(16):
             self.canvas.create_line(
                 10 + (i * 30), 25, 10 + (i * 30), 61, fill=ctx.off_color
@@ -90,9 +100,18 @@ class Display(Frame):
             for i in v:
                 new_bytes[hex(k)].append(LINES[position][i])
 
-        # Required loop avoid bias connected lines.
-        for el in new_bytes[hex(int(byte))]:
-            self.canvas.create_line(el, fill=ctx.on_color)
+        byte = int(byte, 0)
+        if byte >= 0x80:
+            for el in new_bytes[hex(byte - len(BYTES))]:
+                self.canvas.create_line(el, fill=ctx.on_color)
+            self.canvas.create_rectangle(
+                LINES[position][-1],
+                fill=ctx.on_color, outline=ctx.on_color
+            )
+        else:
+            # Required loop avoid bias connected lines.
+            for el in new_bytes[hex(byte)]:
+                self.canvas.create_line(el, fill=ctx.on_color)
 
         self.canvas.pack(fill=BOTH, expand=1)
 
@@ -121,7 +140,16 @@ def ZeroSeg_code():
 
     while True:
         now = datetime.now()
-        screen.write_text(f"{now.hour}-{now.minute}-{now.second}")
+        h = now.hour
+        if h < 10:
+            h = '0' + str(h)
+        m = now.minute
+        if m < 10:
+            m = '0' + str(m)
+        s = now.second
+        if s < 10:
+            s = '0' + str(s)
+        screen.write_text(f"{h}.{m}.{s}")
         time.sleep(1)
 
 

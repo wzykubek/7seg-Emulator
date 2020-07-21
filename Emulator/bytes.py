@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Dict with 256 bytes and numbers of lines in sector in order
-specified in scheme - `/docs/bytes_scheme.png`.
+Dict with 128 (without dots) bytes and numbers of lines in sector
+in order specified in scheme - `/docs/bytes_scheme.png`.
 """
 
 BYTES = {
@@ -133,6 +133,4 @@ BYTES = {
     0x7d: [0, 1, 2, 3, 4, 6],
     0x7e: [0, 1, 2, 3, 4, 5],
     0x7f: [0, 1, 2, 3, 4, 5, 6],
-    0x80: [7],
-    # TODO: The same sequence but with additional dot.
 }
