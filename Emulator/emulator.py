@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-from tkinter import Tk, Canvas, Frame, BOTH, Button
+from tkinter import Tk, Canvas, Frame, BOTH, LEFT, RIGHT, Button
 from Emulator.bytes import BYTES
 from Emulator.sectors import LINES
+import time
 
 app = Tk()
 
@@ -17,6 +18,8 @@ class ctx(object):
     on_color = "#fc0505"
     update_delay = 10  # ms
     method = []
+    lb_pressed = False
+    rb_pressed = False
 
 
 class Display(Frame):
@@ -69,14 +72,28 @@ class Display(Frame):
                 10 + (i * 30), 61, 10 + (i * 30), 96, fill=ctx.off_color
             )
 
+    def left_button_state(self):
+        ctx.lb_pressed = True
+        time.sleep(0.02)
+        ctx.lb_pressed = False
+
+    def right_button_state(self):
+        ctx.rb_pressed = True
+        time.sleep(0.02)
+        ctx.rb_pressed = False
+
     def init_buttons(self):
         """
         Initialize buttons (not working yet).
         """
-        self.button_left = Button(self)
-        self.button_left.pack(fill=BOTH)
-        self.button_right = Button(self)
-        self.button_right.pack(fill=BOTH)
+        self.button_left = Button(
+           self, bg="#000", fg="#fff", text="1", command=self.left_button_state
+        )
+        self.button_left.pack(side=LEFT, fill=BOTH)
+        self.button_right = Button(
+            self, bg="#000", fg="#fff", text="2", command=self.right_button_state
+        )
+        self.button_right.pack(side=RIGHT, fill=BOTH)
 
     def update_handler(self):
         """
@@ -105,8 +122,7 @@ class Display(Frame):
             for el in new_bytes[hex(byte - len(BYTES))]:
                 self.canvas.create_line(el, fill=ctx.on_color)
             self.canvas.create_rectangle(
-                LINES[position][-1],
-                fill=ctx.on_color, outline=ctx.on_color
+                LINES[position][-1], fill=ctx.on_color, outline=ctx.on_color
             )
         else:
             # Required loop avoid bias connected lines.
@@ -134,23 +150,16 @@ def ZeroSeg_code():
     """
     Testing function with ZeroSeg library example code.
     """
-    from Emulator.library import screen
-    from datetime import datetime
-    import time
+    from Emulator.library import screen, Button
+
+    bleft = Button("left")
+    bright = Button("right")
 
     while True:
-        now = datetime.now()
-        h = now.hour
-        if h < 10:
-            h = '0' + str(h)
-        m = now.minute
-        if m < 10:
-            m = '0' + str(m)
-        s = now.second
-        if s < 10:
-            s = '0' + str(s)
-        screen.write_text(f"{h}.{m}.{s}")
-        time.sleep(1)
+        if bleft.pressed():
+            screen.write_text("left")
+        if bright.pressed():
+            screen.write_text("right")
 
 
 def main():

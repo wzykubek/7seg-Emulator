@@ -5,6 +5,7 @@ behaviour but displayed on emulator display.
 """
 
 from Emulator.characters import CHARS, UNDEFINED
+import time
 
 METHOD = []
 
@@ -13,6 +14,7 @@ class Screen:
     """
     Representation of `screen` object from ZeroSeg library.
     """
+
     def __init__(self):
         pass
 
@@ -77,3 +79,26 @@ class Screen:
 
 
 screen = Screen()
+
+
+class Button:
+    """
+    Representation of `Button` class from ZeroSeg library.
+    """
+
+    def __init__(self, button: str):
+        self.button = button
+        if button == "left" or button == "right":
+            pass
+        else:
+            raise ValueError("Invalid button name, allowed: 'left', 'right'.")
+
+    def pressed(self) -> bool:
+        time.sleep(0.01)
+        for _ in range(1):
+            from Emulator.emulator import ctx as emuctx
+
+            if self.button == "left":
+                return emuctx.lb_pressed
+            elif self.button == "right":
+                return emuctx.rb_pressed
